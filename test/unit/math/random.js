@@ -7,7 +7,7 @@ suite('Random', function() {
 
     var results = [];
 
-  suite('random()', function() {
+    suite('random()', function() {
       setup(function() {
         randomSeed(99);
         for (var i = 0; i < 5; i++) {
@@ -27,7 +27,7 @@ suite('Random', function() {
         }
       });
     });
-    
+
 
 
     suite('random()', function() {
@@ -56,6 +56,13 @@ suite('Random', function() {
         assert.isTrue(result < 10);
       });
     });
+    suite('random(["apple", "pear", "orange", "grape"])', function() {
+      test('should return a fruit', function() {
+        var fruits = ['apple', 'pear', 'orange', 'grape'];
+        result = random(fruits);
+        assert.include(fruits, result);
+      });
+    });
   });
-  
+
 });

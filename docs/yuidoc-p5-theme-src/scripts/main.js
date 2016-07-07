@@ -8,21 +8,18 @@ define('App', function() {
 
 /**
  * Load json API data and start the router.
- * @param {module} _
- * @param {module} Backbone
  * @param {module} App
  * @param {module} router
  */
 require([
-  'underscore',
-  'backbone',
-  'App'], function(_, Backbone, App) {
-  
+  'App',
+  './documented-method'], function(App, DocumentedMethod) {
+
   // Set collections
   App.collections = ['allItems', 'classes', 'events', 'methods', 'properties', 'p5.sound', 'p5.dom'];
 
   // Get json API data
-  $.getJSON("data.json", function(data) {
+  $.getJSON('data.min.json', function(data) {
     App.data = data;
     App.classes = [];
     App.methods = [];
@@ -62,9 +59,9 @@ require([
 
     // Get class items (methods, properties, events)
     _.each(items, function(el, idx, array) {
-
       if (el.itemtype) {
         if (el.itemtype === "method") {
+          el = new DocumentedMethod(el);
           App.methods.push(el);
           App.allItems.push(el);
         } else if (el.itemtype === "property") {
@@ -73,7 +70,7 @@ require([
         } else if (el.itemtype === "event") {
           App.events.push(el);
           App.allItems.push(el);
-        } 
+        }
 
         // libraries
         if (el.module === "p5.sound") {
@@ -87,7 +84,7 @@ require([
         }
       }
     });
-    
+
     _.each(App.classes, function(c, idx) {
       c.items = _.filter(App.allItems, function(it){ return it.class === c.name; });
     });

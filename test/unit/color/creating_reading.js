@@ -1,88 +1,75 @@
 suite('CreatingReading', function() {
-  
-  // p5 instance
   var myp5 = new p5(function( sketch ) {
     sketch.setup = function() {};
     sketch.draw = function() {};
   });
 
-  setup(function() {
-    myp5.colorMode(myp5.RGB, 255); 
-  });
-
-  suite('p5.prototype.color', function() {
-    var color;
-
-    suite('color([])', function() {
-      setup(function() {
-        color = myp5.color([1,2,3]);
-      });
-      test('should return a p5.Color', function() {
-        assert.instanceOf(color, p5.Color);
-        assert.deepEqual(color.rgba, [1,2,3,255]);
-      });
-    });
-
-    suite('color(a,b,c)', function() {
-      setup(function() {
-        color = myp5.color(1,2,3);
-      });
-      test('should return a p5.Color', function() {
-        assert.instanceOf(color, p5.Color);
-        assert.deepEqual(color.rgba, [1,2,3,255]);
-      });
-    });
-
-    suite('color(p5.Color)', function() {
-      setup(function() {
-        var tempColor = myp5.color([1,2,3]);
-        color = myp5.color(tempColor);
-      });
-      test('should return a p5.Color', function() {
-        assert.instanceOf(color, p5.Color);
-        assert.deepEqual(color.rgba, [1,2,3,255]);
-      });
-    });
-  });
-
-  suite('p5.prototype.red,green,blue,brightness', function() {
-    var color, rgbaColor, colorArr, colorAndAlphaArr;
-
+  var fromColor;
+  var toColor;
+  suite('p5.prototype.lerpColor', function() {
     setup(function() {
-      colorArr = [1,2,3];
-      colorAndAlphaArr = [1,2,3,4];
-      color = myp5.color(colorArr);
-      rgbaColor = myp5.color(colorAndAlphaArr);
+      myp5.colorMode(myp5.RGB);
+      fromColor = myp5.color(218, 165, 32);
+      toColor = myp5.color(72, 61, 139);
     });
-
-    test('p5.prototype.red', function() {
-      assert.equal(myp5.red(colorAndAlphaArr), 1);
-      assert.equal(myp5.red(colorArr), 1);
-      assert.equal(myp5.red(color), 1);
-      assert.equal(myp5.red(rgbaColor), 1);
+    test('should correctly get lerp colors in RGB', function() {
+      var interA = myp5.lerpColor(fromColor, toColor, 0.33);
+      var interB = myp5.lerpColor(fromColor, toColor, 0.66);
+      assert.deepEqual(interA.levels, [170, 131, 67, 255]);
+      assert.deepEqual(interB.levels, [122, 96, 103, 255]);
     });
-
-    test('p5.prototype.green', function() {
-      assert.equal(myp5.green(colorAndAlphaArr), 2);
-      assert.equal(myp5.green(colorArr), 2);
-      assert.equal(myp5.green(color), 2);
-      assert.equal(myp5.green(rgbaColor), 2);
-
+    test('should correctly get lerp colors in HSL', function() {
+      myp5.colorMode(myp5.HSL);
+      var interA = myp5.lerpColor(fromColor, toColor, 0.33);
+      var interB = myp5.lerpColor(fromColor, toColor, 0.66);
+      assert.deepEqual(interA.levels, [66, 190, 44, 255]);
+      assert.deepEqual(interB.levels, [53, 164, 161, 255]);
     });
-
-    test('p5.prototype.blue', function() {
-      assert.equal(myp5.blue(colorAndAlphaArr), 3);
-      assert.equal(myp5.blue(colorArr), 3);
-      assert.equal(myp5.blue(color), 3);
-      assert.equal(myp5.blue(rgbaColor), 3);
+    test('should correctly get lerp colors in HSB', function() {
+      myp5.colorMode(myp5.HSB);
+      var interA = myp5.lerpColor(fromColor, toColor, 0.33);
+      var interB = myp5.lerpColor(fromColor, toColor, 0.66);
+      assert.deepEqual(interA.levels, [69, 192, 47, 255]);
+      assert.deepEqual(interB.levels, [56, 166, 163, 255]);
     });
-
-    test('p5.prototype.brightness', function() {
-      assert.equal(myp5.brightness(colorAndAlphaArr), 1);
-      assert.equal(myp5.brightness(colorArr), 1);
-      assert.equal(myp5.brightness(color), 1);
-      assert.equal(myp5.brightness(rgbaColor), 1);
+    test('should not extrapolate', function() {
+      var interA = myp5.lerpColor(fromColor, toColor, -0.5);
+      var interB = myp5.lerpColor(fromColor, toColor, 1.5);
+      assert.deepEqual(interA.levels, [218, 165, 32, 255]);
+      assert.deepEqual(interB.levels, [72, 61, 139, 255]);
     });
   });
-
+  suite('p5.prototype.lerpColor with alpha', function() {
+    setup(function() {
+      myp5.colorMode(myp5.RGB);
+      fromColor = myp5.color(218, 165, 32, 49);
+      toColor = myp5.color(72, 61, 139, 200);
+    });
+    test('should correctly get lerp colors in RGB with alpha', function() {
+      var interA = myp5.lerpColor(fromColor, toColor, 0.33);
+      var interB = myp5.lerpColor(fromColor, toColor, 0.66);
+      assert.deepEqual(interA.levels, [170, 131, 67, 99]);
+      assert.deepEqual(interB.levels, [122, 96, 103, 149]);
+    });
+    test('should correctly get lerp colors in HSL with alpha', function() {
+      myp5.colorMode(myp5.HSL);
+      var interA = myp5.lerpColor(fromColor, toColor, 0.33);
+      var interB = myp5.lerpColor(fromColor, toColor, 0.66);
+      assert.deepEqual(interA.levels, [66, 190, 44, 99]);
+      assert.deepEqual(interB.levels, [53, 164, 161, 149]);
+    });
+    test('should correctly get lerp colors in HSB with alpha', function() {
+      myp5.colorMode(myp5.HSB);
+      var interA = myp5.lerpColor(fromColor, toColor, 0.33);
+      var interB = myp5.lerpColor(fromColor, toColor, 0.66);
+      assert.deepEqual(interA.levels, [69, 192, 47, 99]);
+      assert.deepEqual(interB.levels, [56, 166, 163, 149]);
+    });
+    test('should not extrapolate', function() {
+      var interA = myp5.lerpColor(fromColor, toColor, -0.5);
+      var interB = myp5.lerpColor(fromColor, toColor, 1.5);
+      assert.deepEqual(interA.levels, [218, 165, 32, 49]);
+      assert.deepEqual(interB.levels, [72, 61, 139, 200]);
+    });
+  });
 });

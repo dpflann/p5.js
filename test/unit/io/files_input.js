@@ -1,44 +1,21 @@
-/* global opentype: false */
-
 suite('Files', function() {
 
   var loadJSON = p5.prototype.loadJSON;
-  var loadFont = p5.prototype.loadFont;
   // var loadStrings = p5.prototype.loadStrings;
 
   //variable for preload
   var preload = p5.prototype.preload;
   var result;
 
-
-  //tests while preload is true without callbacks
+  // tests while preload is true without callbacks
+  //p5.prototype.preload = function() {};
   preload = true;
+
   test('preload is a Boolean', function() {
     assert.typeOf(preload, 'Boolean');
   });
 
-  suite('loadFont() in Preload', function () {
-
-    test('should be opentype', function() {
-      assert.ok(opentype);
-      assert.isObject(opentype);
-    });
-
-    test('should be a function', function() {
-      assert.ok(loadFont);
-      assert.typeOf(loadFont, 'function');
-    });
-
-    test('should return an object', function() {
-      result = loadFont(opentype, './acmesa.ttf');
-      assert.ok(result);
-      assert.isObject(result);
-      //assert.isObject(result.font);
-    });
-  });
-
   suite('loadJSON() in Preload', function () {
-
     test('should be a function', function() {
       assert.ok(loadJSON);
       assert.typeOf(loadJSON, 'function');
@@ -51,13 +28,7 @@ suite('Files', function() {
       assert.typeOf(result, 'Array');
       // assert.lengthOf(result, 2);
     });
-
-    // test('should return an Object', function() {
-    //   assert.isObject(result, ['the result is an object'])
-    // });
   });
-
-
 
   //   test('should be a function', function( {
   //     assert.ok(loadJSON);
@@ -81,8 +52,8 @@ suite('Files', function() {
   //tests while preload is false with callbacks
   preload = false;
 
-  suite('p5.prototype.loadJSON', function(){
-    test('should be a function', function(){
+  suite('p5.prototype.loadJSON', function() {
+    test('should be a function', function() {
       assert.ok(loadJSON);
       assert.typeOf(loadJSON, 'function');
     });
@@ -100,7 +71,7 @@ suite('Files', function() {
     });*/
 
   });
-/*
+  /*
   var loadTable = p5.prototype.loadTable;
 
 
@@ -182,5 +153,5 @@ suite('Files', function() {
       loadTable(url,myCallback);
     });
   });
-*/
+  */
 });
